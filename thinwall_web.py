@@ -1,6 +1,7 @@
 from flask import Flask
 import flask
 import json
+import thinwall
 
 # print a nice greeting.
 def say_hello(username = "World"):
@@ -31,8 +32,10 @@ application.add_url_rule('/', 'index', (lambda: application.send_static_file('in
 def foo():
     if not flask.request.json:
         flask.abort(400)
-    print flask.request.json
-    return json.dumps(flask.request.json)
+    parameters = flask.request.json
+    response = flask.make_response(thinwall.generate(parameters))
+    response.headers["Content-Disposition"] = "attachment; filename=toolpath.ngc"
+    return response
 
 # run the app.
 if __name__ == "__main__":
